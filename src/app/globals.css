@@ -1,26 +1,98 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------------------------------------
+   AOC design tokens
+
+   Layout language comes from the Pangea reference: a warm off-white
+   canvas, white cards floating on it, dark bands anchoring the page,
+   and colour supplied mainly by photography.
+
+   Palette comes from the AOC logo instead of the reference's pure
+   black — navy ink, gold accent, warm off-white ground. Gold is kept
+   deliberately scarce: it marks the wordmark and small accents only,
+   so the restraint of the reference survives the brand colours.
+   --------------------------------------------------------------- */
+
+@theme {
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+
+  /* Surfaces — canvas matches the logo's own background */
+  --color-canvas: #f4f2ef;
+  --color-surface: #ffffff;
+  --color-surface-sunk: #e9e6e1;
+
+  /* Ink — navy from the logo wordmark */
+  --color-ink: #17293d;
+  --color-ink-soft: #3c4f63;
+  --color-muted: #6b7280;
+  --color-line: #e2ded8;
+
+  /* Accent — gold from "LOGISTICS" and the orbit dot. Use sparingly. */
+  --color-accent: #a98b63;
+  --color-accent-soft: #c9b190;
+
+  /* Dark bands — deep navy rather than black, to sit with the mark */
+  --color-night: #101e2c;
+  --color-night-card: #1a2c3d;
+  --color-night-line: #26394b;
+  --color-night-muted: #97a6b5;
+
+  /* Radii — generous, matching the reference's soft cards */
+  --radius-card: 1.5rem;
+  --radius-tile: 1rem;
+
+  /* Display type scale */
+  --text-display: 4.25rem;
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+
+  --text-headline: 2.75rem;
+  --text-headline--line-height: 1.06;
+  --text-headline--letter-spacing: -0.03em;
+
+  --text-title: 1.5rem;
+  --text-title--line-height: 1.2;
+  --text-title--letter-spacing: -0.02em;
+
+  /* Oversized stat numerals */
+  --text-stat: 3.5rem;
+  --text-stat--line-height: 1;
+  --text-stat--letter-spacing: -0.04em;
+
+  /* Tiny uppercase section labels */
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.12em;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Respect users who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@utility label {
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+  color: var(--color-muted);
 }
