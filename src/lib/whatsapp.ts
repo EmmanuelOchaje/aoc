@@ -4,37 +4,32 @@ export type QuoteRequest = {
   name: string;
   phone: string;
   email: string;
-  serviceLine: string;
+  type: string;
   origin: string;
   destination: string;
   weight: string;
-  details: string;
+  carrier: string;
+  description: string;
 };
 
 const LABELS: Record<keyof QuoteRequest, string> = {
   name: "Name",
   phone: "Phone",
   email: "Email",
-  serviceLine: "Service",
+  type: "Type",
   origin: "Origin",
   destination: "Destination",
-  weight: "Weight / volume",
-  details: "Details",
+  weight: "Weight (kg)",
+  carrier: "Carrier",
+  description: "Item",
 };
 
 const FIELD_ORDER = Object.keys(LABELS) as (keyof QuoteRequest)[];
 
-/**
- * Compose a quote request into a readable WhatsApp message.
- * Empty optional fields are omitted rather than sent as blank lines.
- */
+/** Compose a quote request into a readable WhatsApp message. */
 export function buildQuoteMessage(request: QuoteRequest): string {
-  const lines = FIELD_ORDER.flatMap((field) => {
-    const value = request[field].trim();
-    return value ? [`${LABELS[field]}: ${value}`] : [];
-  });
-
-  return ["Hello AOC, I would like a shipping quote.", "", ...lines].join("\n");
+  const lines = FIELD_ORDER.map((field) => `${LABELS[field]}: ${request[field].trim()}`);
+  return ["Quote request", ...lines].join("\n");
 }
 
 /**
@@ -46,7 +41,7 @@ export function buildWhatsAppUrl(request: QuoteRequest): string {
   return `https://wa.me/${contact.whatsapp}?text=${text}`;
 }
 
-/** A bare "chat with us" link with no prefilled request. */
-export function chatUrl(message = "Hello AOC, I have a question about shipping."): string {
+/** A bare "chat with us" link, optionally with a prefilled message. */
+export function chatUrl(message = "Hello, I'd like a quote. I'm sending "): string {
   return `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
 }

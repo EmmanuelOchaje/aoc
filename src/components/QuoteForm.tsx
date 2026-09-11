@@ -1,138 +1,115 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { serviceLines } from "@/content/site";
+import { useRef, useState, type FormEvent } from "react";
+import { carriers, shipmentTypes } from "@/content/site";
 import { buildWhatsAppUrl, type QuoteRequest } from "@/lib/whatsapp";
 
 const EMPTY: QuoteRequest = {
   name: "",
   phone: "",
   email: "",
-  serviceLine: "",
+  type: shipmentTypes[0],
   origin: "",
   destination: "",
   weight: "",
-  details: "",
+  carrier: carriers[0],
+  description: "",
 };
 
 /**
  * Collects a quote request and hands it to WhatsApp as a prefilled
- * message. Nothing is stored or sent server-side — the customer's
- * own WhatsApp does the delivering, so there is no backend to run
- * and no inbox to monitor beyond the phone AOC already uses.
+ * message. Nothing is stored or sent server-side.
  */
 export function QuoteForm() {
   const [values, setValues] = useState<QuoteRequest>(EMPTY);
-  const [errors, setErrors] = useState<Partial<Record<keyof QuoteRequest, string>>>({});
+  const [message, setMessage] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
-  function update(field: keyof QuoteRequest, value: string) {
+  function update<K extends keyof QuoteRequest>(field: K, value: QuoteRequest[K]) {
     setValues((previous) => ({ ...previous, [field]: value }));
-    setErrors((previous) => ({ ...previous, [field]: undefined }));
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    const nextErrors: Partial<Record<keyof QuoteRequest, string>> = {};
-    if (!values.name.trim()) nextErrors.name = "Please tell us your name.";
-    if (!values.phone.trim()) nextErrors.phone = "We need a number to reach you on.";
-    if (!values.destination.trim()) nextErrors.destination = "Where is it going?";
-
-    if (Object.keys(nextErrors).length > 0) {
-      setErrors(nextErrors);
-      return;
-    }
-
-    window.open(buildWhatsAppUrl(values), "_blank", "noopener,noreferrer");
+    window.open(buildWhatsAppUrl(values), "_blank", "noopener");
+    setMessage(
+      "Opening WhatsApp with your details. If it does not open, call the number on the left."
+    );
+    formRef.current?.reset();
+    setValues(EMPTY);
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-      <div className="grid gap-5 sm:grid-cols-2">
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      className="grid gap-3 rounded-[var(--radius-tile)] bg-surface p-5 sm:p-7"
+    >
+      <Field
+        label="Full name"
+        required
+        value={values.name}
+        onChange={(v) => update("name", v)}
+      />
+      <div className="grid gap-3 sm:grid-cols-2">
         <Field
-          label="Full name"
-          value={values.name}
-          error={errors.name}
-          onChange={(value) => update("name", value)}
-        />
-        <Field
-          label="Phone number"
+          label="Phone"
           type="tel"
+          required
           value={values.phone}
-          error={errors.phone}
-          onChange={(value) => update("phone", value)}
+          onChange={(v) => update("phone", v)}
         />
-        <Field
-          label="Email address"
-          type="email"
-          optional
-          value={values.email}
-          onChange={(value) => update("email", value)}
-        />
+        <Field label="Email" type="email" value={values.email} onChange={(v) => update("email", v)} />
+      </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="serviceLine" className="label">
-            Service
-          </label>
-          <select
-            id="serviceLine"
-            value={values.serviceLine}
-            onChange={(event) => update("serviceLine", event.target.value)}
-            className="h-12 rounded-[var(--radius-tile)] border border-line bg-surface px-4 text-sm outline-none focus:border-ink"
-          >
-            <option value="">Not sure yet</option>
-            {serviceLines.map((line) => (
-              <option key={line.id} value={line.name}>
-                {line.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      <SelectField
+        label="Shipment type"
+        value={values.type}
+        options={shipmentTypes}
+        onChange={(v) => update("type", v)}
+      />
 
-        <Field
-          label="Origin"
-          optional
-          value={values.origin}
-          onChange={(value) => update("origin", value)}
-        />
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Origin" value={values.origin} onChange={(v) => update("origin", v)} />
         <Field
           label="Destination"
           value={values.destination}
-          error={errors.destination}
-          onChange={(value) => update("destination", value)}
-        />
-        <Field
-          label="Weight or volume"
-          optional
-          value={values.weight}
-          onChange={(value) => update("weight", value)}
+          onChange={(v) => update("destination", v)}
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor="details" className="label">
-          What are you shipping? <span className="normal-case">(optional)</span>
-        </label>
-        <textarea
-          id="details"
-          rows={4}
-          value={values.details}
-          onChange={(event) => update("details", event.target.value)}
-          className="resize-y rounded-[var(--radius-tile)] border border-line bg-surface p-4 text-sm outline-none focus:border-ink"
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field
+          label="Weight (kg)"
+          type="number"
+          value={values.weight}
+          onChange={(v) => update("weight", v)}
+        />
+        <SelectField
+          label="Carrier"
+          value={values.carrier}
+          options={carriers}
+          onChange={(v) => update("carrier", v)}
         />
       </div>
+
+      <label className="grid gap-1.5 text-xs font-semibold text-muted">
+        What are you sending?
+        <textarea
+          rows={3}
+          value={values.description}
+          onChange={(event) => update("description", event.target.value)}
+          className="w-full resize-y rounded-lg border border-line bg-canvas p-3.5 text-sm text-ink outline-none focus:border-ink"
+        />
+      </label>
 
       <button
         type="submit"
-        className="inline-flex items-center justify-center gap-2 self-start rounded-full bg-ink px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-night"
+        className="inline-flex min-h-[50px] items-center justify-center self-start rounded-full bg-ink px-7 text-sm font-semibold text-white transition-colors hover:bg-[#33383D]"
       >
-        Send on WhatsApp
+        Send my details
       </button>
-
-      <p className="text-sm text-muted">
-        This opens WhatsApp with your details filled in. Nothing is sent until you
-        press send there.
-      </p>
+      <p className="min-h-[18px] text-[13px] text-muted">{message}</p>
     </form>
   );
 }
@@ -142,39 +119,53 @@ function Field({
   value,
   onChange,
   type = "text",
-  optional = false,
-  error,
+  required = false,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   type?: string;
-  optional?: boolean;
-  error?: string;
+  required?: boolean;
 }) {
-  const id = label.toLowerCase().replace(/\s+/g, "-");
-
   return (
-    <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="label">
-        {label} {optional && <span className="normal-case">(optional)</span>}
-      </label>
+    <label className="grid min-w-0 gap-1.5 text-xs font-semibold text-muted">
+      {label}
       <input
-        id={id}
         type={type}
+        required={required}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? `${id}-error` : undefined}
-        className={`h-12 rounded-[var(--radius-tile)] border bg-surface px-4 text-sm outline-none focus:border-ink ${
-          error ? "border-red-500" : "border-line"
-        }`}
+        className="min-h-[46px] w-full min-w-0 rounded-lg border border-line bg-canvas px-3.5 text-sm text-ink outline-none focus:border-ink"
       />
-      {error && (
-        <p id={`${id}-error`} className="text-xs text-red-600">
-          {error}
-        </p>
-      )}
-    </div>
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: readonly string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="grid min-w-0 gap-1.5 text-xs font-semibold text-muted">
+      {label}
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="min-h-[46px] w-full min-w-0 rounded-lg border border-line bg-canvas px-3 text-sm text-ink outline-none focus:border-ink"
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }

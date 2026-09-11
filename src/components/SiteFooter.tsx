@@ -1,104 +1,87 @@
-import Link from "next/link";
-import { company, contact, nav, services } from "@/content/site";
+import { company, contact, nav } from "@/content/site";
 import { Container } from "@/components/ui";
 import { Wordmark } from "@/components/Wordmark";
+import { chatUrl } from "@/lib/whatsapp";
 
 export function SiteFooter() {
+  const [lagos, abuja] = contact.offices;
+
   return (
-    <footer className="bg-night text-white">
-      <Container className="py-16 md:py-20">
-        <div className="grid gap-12 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+    <footer className="px-4 py-6 sm:px-6 sm:py-10">
+      <Container className="!px-0">
+        <div className="grid gap-8 border-t border-line pt-8 sm:grid-cols-2 sm:gap-10 md:grid-cols-6 md:pt-10">
           <div>
-            <Wordmark onDark />
-            <p className="mt-5 max-w-[32ch] text-sm text-night-muted">
-              {company.tagline}
+            <Wordmark />
+            <p className="mt-3 max-w-[26ch] text-sm leading-relaxed text-muted">
+              Lagos and Abuja. DHL, FedEx and UPS dispatch.
             </p>
           </div>
 
-          <FooterColumn title="Pages">
-            {nav.map((item) => (
-              <FooterLink key={item.href} href={item.href}>
-                {item.label}
-              </FooterLink>
-            ))}
+          <FooterColumn title="Lagos office">
+            <p className="max-w-[24ch] text-muted">{lagos.address}</p>
+            <a href={lagos.phoneHref} className="text-muted hover:text-ink">
+              {lagos.phone}
+            </a>
           </FooterColumn>
 
-          <FooterColumn title="Services">
-            {services.slice(0, 5).map((service) => (
-              <FooterLink key={service.slug} href="/services">
-                {service.title}
-              </FooterLink>
+          <FooterColumn title="Abuja office">
+            <p className="max-w-[24ch] text-muted">{abuja.address}</p>
+            <a href={abuja.phoneHref} className="text-muted hover:text-ink">
+              {abuja.phone}
+            </a>
+          </FooterColumn>
+
+          <FooterColumn title="Navigation">
+            {nav.map((item) => (
+              <a key={item.href} href={item.href} className="text-muted hover:text-ink">
+                {item.label}
+              </a>
             ))}
+            <a href="#track" className="text-muted hover:text-ink">
+              Track
+            </a>
           </FooterColumn>
 
           <FooterColumn title="Contact">
-            {contact.offices.map((office) => (
-              <li key={office.name} className="text-sm text-night-muted">
-                <span className="block text-white">{office.name}</span>
-                {office.address}
-                <span className="mt-1 block">{office.phone}</span>
-              </li>
-            ))}
-            <li className="text-sm text-night-muted">{contact.email}</li>
+            <a href={lagos.phoneHref} className="text-muted hover:text-ink">
+              {lagos.phone}
+            </a>
+            <a href={`mailto:${contact.email}`} className="text-muted hover:text-ink">
+              {contact.email}
+            </a>
+            <a
+              href={chatUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted hover:text-ink"
+            >
+              WhatsApp
+            </a>
+          </FooterColumn>
+
+          <FooterColumn title="Carriers">
+            <span className="text-muted">DHL</span>
+            <span className="text-muted">FedEx</span>
+            <span className="text-muted">UPS</span>
           </FooterColumn>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-night-line pt-6 text-sm text-night-muted sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p>
-              © {new Date().getFullYear()} {company.legalName}. All rights
-              reserved.
-            </p>
-            {/* CC BY 4.0 attribution for the hero photograph — see CREDITS.md */}
-            <p className="mt-1 text-xs text-night-muted/70">
-              Hero photograph by 4300streetcar,{" "}
-              <a
-                href="https://creativecommons.org/licenses/by/4.0"
-                className="underline underline-offset-2 hover:text-white"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                CC BY 4.0
-              </a>
-              .
-            </p>
-          </div>
-          <ul className="flex gap-5">
-            {contact.socials.map((social) => (
-              <li key={social.label}>
-                <a href={social.href} className="transition-colors hover:text-white">
-                  {social.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+        <div className="mt-6 flex flex-wrap justify-between gap-3 text-xs text-muted sm:mt-9">
+          <span>
+            © {new Date().getFullYear()} {company.legalName}
+          </span>
+          <span>{contact.hours}</span>
         </div>
       </Container>
     </footer>
   );
 }
 
-function FooterColumn({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div>
-      <h2 className="text-sm font-medium text-white">{title}</h2>
-      <ul className="mt-4 flex flex-col gap-3">{children}</ul>
+    <div className="grid content-start gap-2 text-sm">
+      <div className="font-semibold text-ink">{title}</div>
+      {children}
     </div>
-  );
-}
-
-function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <li>
-      <Link href={href} className="text-sm text-night-muted transition-colors hover:text-white">
-        {children}
-      </Link>
-    </li>
   );
 }

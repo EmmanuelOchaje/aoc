@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { Instrument_Sans } from "next/font/google";
 import { company } from "@/content/site";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppFab } from "@/components/WhatsAppFab";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument-sans",
   subsets: ["latin"],
 });
 
@@ -26,7 +26,7 @@ export default function RootLayout({
     // The font variable must live on <html>, not <body>: Tailwind's
     // @theme declares --font-sans on :root, and a var() there cannot
     // reach a property defined further down the tree.
-    <html lang="en" className={dmSans.variable}>
+    <html lang="en" className={instrumentSans.variable}>
       <body className="font-sans antialiased">
         {children}
         <SiteFooter />

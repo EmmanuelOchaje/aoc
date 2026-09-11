@@ -3,46 +3,42 @@
 import { useState } from "react";
 
 /**
- * FAQ accordion. Uses buttons with aria-expanded rather than
- * <details> so the open/close state can be animated and only one
- * row stays open at a time.
+ * FAQ accordion. Each row is its own card and toggles independently
+ * of the others (not exclusive) — matches the source design.
  */
 export function Accordion({
   items,
 }: {
   items: readonly { question: string; answer: string }[];
 }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [open, setOpen] = useState<Record<number, boolean>>({ 0: true });
 
   return (
-    <div className="divide-y divide-line border-y border-line">
+    <div className="grid gap-2.5">
       {items.map((item, index) => {
-        const isOpen = openIndex === index;
+        const isOpen = Boolean(open[index]);
         const panelId = `faq-panel-${index}`;
 
         return (
-          <div key={item.question}>
+          <div key={item.question} className="rounded-[0.625rem] bg-surface px-4 sm:px-6">
             <h3>
               <button
                 type="button"
-                onClick={() => setOpenIndex(isOpen ? null : index)}
+                onClick={() => setOpen((prev) => ({ ...prev, [index]: !prev[index] }))}
                 aria-expanded={isOpen}
                 aria-controls={panelId}
-                className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                className="flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] font-semibold sm:text-base"
               >
-                <span className="text-title font-medium">{item.question}</span>
-                <span
-                  aria-hidden
-                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-lg transition-transform ${
-                    isOpen ? "rotate-45" : ""
-                  }`}
-                >
-                  +
+                {item.question}
+                <span aria-hidden className="text-lg font-normal text-muted">
+                  {isOpen ? "−" : "+"}
                 </span>
               </button>
             </h3>
             <div id={panelId} hidden={!isOpen}>
-              <p className="max-w-[70ch] pb-6 text-muted">{item.answer}</p>
+              <p className="max-w-[74ch] pb-5 text-sm leading-relaxed text-ink-soft">
+                {item.answer}
+              </p>
             </div>
           </div>
         );

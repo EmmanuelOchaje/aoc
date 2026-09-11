@@ -37,9 +37,9 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const styles = {
-    solid: "bg-ink text-white hover:bg-night",
+    solid: "bg-ink text-white hover:bg-[#33383D]",
     outline: "border border-line bg-transparent text-ink hover:bg-surface",
-    light: "bg-white text-ink hover:bg-canvas",
+    light: "bg-white text-ink hover:bg-[#E4E2DD]",
   }[variant];
 
   const isExternal = href.startsWith("http") || href.startsWith("mailto:");
@@ -100,26 +100,5 @@ export function StatRow({
         </div>
       ))}
     </dl>
-  );
-}
-
-/**
- * Placeholder for imagery not yet supplied. Renders an obvious
- * empty frame rather than pulling in stock photography, so it is
- * clear at a glance which images still need real photos.
- */
-export function ImageSlot({
-  caption,
-  className = "",
-}: {
-  caption: string;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`flex items-center justify-center rounded-[var(--radius-card)] border border-dashed border-line bg-surface-sunk p-8 text-center ${className}`}
-    >
-      <span className="label max-w-[24ch]">Photo needed — {caption}</span>
-    </div>
   );
 }
