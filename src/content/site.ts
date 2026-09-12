@@ -276,14 +276,14 @@ export const carriers = ["No preference", "DHL", "FedEx", "UPS"] as const;
  * nudge each city label clear of its dot.
  */
 export const routeLanes = [
-  { name: "London", coords: [-0.1276, 51.5072] as const, days: "5–7", iso: "826", dx: 5, dy: -8 },
+  { name: "London", coords: [-0.1276, 51.5072] as const, days: "3–5", iso: "826", dx: 5, dy: -8 },
   { name: "Dublin", coords: [-6.2603, 53.3498] as const, days: "5–7", iso: "372", dx: -7, dy: -14, anchor: "end" as const },
   { name: "USA", coords: [-74.006, 40.7128] as const, days: "5–7", iso: "840", dx: -7, dy: 14, anchor: "end" as const },
   { name: "Toronto", coords: [-79.3832, 43.6532] as const, days: "5–7", iso: "124", dx: -7, dy: -8, anchor: "end" as const },
-  { name: "Berlin", coords: [13.405, 52.52] as const, days: "5–7", iso: "276", dx: 7, dy: 4 },
-  { name: "Dubai", coords: [55.2708, 25.2048] as const, days: "5–7", iso: "784", dx: 7, dy: 12 },
+  { name: "Berlin", coords: [13.405, 52.52] as const, days: "2–3", iso: "276", dx: 7, dy: 4 },
+  { name: "Dubai", coords: [55.2708, 25.2048] as const, days: "3–5", iso: "784", dx: 7, dy: 12 },
   { name: "Guangzhou", coords: [113.2644, 23.1291] as const, days: "5–7", iso: "156", dx: 7, dy: -6 },
-  { name: "Johannesburg", coords: [28.0473, -26.2041] as const, days: "5–7", iso: "710", dx: 7, dy: 11 },
+  { name: "Johannesburg", coords: [28.0473, -26.2041] as const, days: "2–3", iso: "710", dx: 7, dy: 11 },
 ] as const;
 
 /** Lagos, our dispatch origin — [lon, lat], plus Nigeria's TopoJSON id for shading. */
