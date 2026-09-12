@@ -12,6 +12,7 @@ import {
   whyUs,
 } from "@/content/site";
 import { Hero } from "@/components/Hero";
+import { Reveal } from "@/components/Reveal";
 import { TrackBar } from "@/components/TrackBar";
 import { ServiceIcon } from "@/components/ServiceIcon";
 import { Testimonials } from "@/components/Testimonials";
@@ -30,22 +31,22 @@ export default function HomePage() {
       {/* Who we are */}
       <section id="about">
         <Container className="py-9 sm:py-14 md:py-20">
-          <div className="grid gap-6 md:grid-cols-[200px_1fr] md:gap-16">
+          <Reveal className="grid gap-6 md:grid-cols-[200px_1fr] md:gap-16">
             <Label>Who we are</Label>
             <p className="max-w-[30ch] text-balance text-[clamp(1.25rem,2.6vw,1.9375rem)] leading-[1.28] font-medium tracking-[-0.02em] md:col-span-2">
               {company.description}
             </p>
-          </div>
+          </Reveal>
 
-          <div className="mt-10 border-t border-line pt-7 sm:mt-14 sm:pt-9">
+          <Reveal delay={100} className="mt-10 border-t border-line pt-7 sm:mt-14 sm:pt-9">
             <StatRow items={stats} />
-          </div>
+          </Reveal>
         </Container>
       </section>
 
       {/* Coverage map */}
       <Container className="pb-10 sm:pb-14 md:pb-20">
-        <div className="mb-6 grid items-end gap-4 sm:mb-9 sm:grid-cols-2">
+        <Reveal className="mb-6 grid items-end gap-4 sm:mb-9 sm:grid-cols-2">
           <h2 className="max-w-[14ch] text-balance text-headline font-medium">
             Where your cargo goes
           </h2>
@@ -53,8 +54,10 @@ export default function HomePage() {
             Every lane runs out of Oshodi, Lagos. Hover a destination to
             trace the route. Figures are working days, door to door.
           </p>
-        </div>
-        <RouteMap />
+        </Reveal>
+        <Reveal delay={100}>
+          <RouteMap />
+        </Reveal>
         <p className="mt-3 text-xs text-muted/70">
           Country outlines from Natural Earth. Routes shown are our
           most-used lanes, not a limit on where we ship.
@@ -63,7 +66,7 @@ export default function HomePage() {
 
       {/* Reliable handling from drop-off to doorstep */}
       <Container className="pb-10 sm:pb-14 md:pb-20">
-        <div className="grid items-center gap-6 sm:gap-14 md:grid-cols-2">
+        <Reveal className="grid items-center gap-6 sm:gap-14 md:grid-cols-2">
           <div>
             <h2 className="max-w-[15ch] text-balance text-headline font-medium">
               Reliable handling from drop-off to doorstep
@@ -106,15 +109,15 @@ export default function HomePage() {
               />
             </div>
           </div>
-        </div>
+        </Reveal>
       </Container>
 
       {/* Services */}
       <section id="services">
         <Container className="pb-10 sm:pb-14 md:pb-20">
           <div className="grid grid-cols-1 gap-6 border-t border-line pt-7 sm:grid-cols-2 sm:gap-10 sm:pt-9 lg:grid-cols-3">
-            {services.map((service) => (
-              <div key={service.slug}>
+            {services.map((service, index) => (
+              <Reveal key={service.slug} delay={(index % 3) * 80}>
                 <div className="text-ink">
                   <ServiceIcon paths={service.icon} />
                 </div>
@@ -124,7 +127,7 @@ export default function HomePage() {
                 <p className="mt-2.5 max-w-[38ch] text-sm leading-relaxed text-muted">
                   {service.description}
                 </p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </Container>
@@ -133,21 +136,23 @@ export default function HomePage() {
       {/* How it works */}
       <section id="process">
         <Container className="pt-8 pb-10 sm:pt-14 sm:pb-14 md:pb-20">
-          <div className="mb-6 grid items-end gap-4 sm:mb-9 sm:grid-cols-2">
+          <Reveal className="mb-6 grid items-end gap-4 sm:mb-9 sm:grid-cols-2">
             <h2 className="max-w-[12ch] text-balance text-headline font-medium">
               How it works
             </h2>
             <p className="max-w-[40ch] text-sm leading-relaxed text-muted sm:justify-self-end">
               From our Oshodi office to anywhere in the world, in four steps.
             </p>
-          </div>
+          </Reveal>
           <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-            {processSteps.map((step) => (
-              <Card key={step.number} className="p-5 sm:p-6.5">
-                <div className="text-xs font-semibold text-muted">{step.number}</div>
-                <h3 className="mt-3.5 text-base font-semibold">{step.title}</h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-muted">{step.description}</p>
-              </Card>
+            {processSteps.map((step, index) => (
+              <Reveal key={step.number} delay={index * 80}>
+                <Card className="p-5 sm:p-6.5">
+                  <div className="text-xs font-semibold text-muted">{step.number}</div>
+                  <h3 className="mt-3.5 text-base font-semibold">{step.title}</h3>
+                  <p className="mt-2.5 text-sm leading-relaxed text-muted">{step.description}</p>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </Container>
@@ -170,22 +175,24 @@ export default function HomePage() {
                 "linear-gradient(90deg, rgba(10,11,12,0.8) 0%, rgba(10,11,12,0.45) 60%, rgba(10,11,12,0.3) 100%)",
             }}
           />
-          <div className="relative flex flex-col justify-between gap-8 sm:gap-16">
+          <Reveal className="relative flex flex-col justify-between gap-8 sm:gap-16">
             <h2 className="max-w-[14ch] text-balance text-headline font-medium text-white">
               Why clients trust us with their cargo
             </h2>
             <Button href="/#quote" variant="light" className="self-start">
               Get a quote
             </Button>
-          </div>
+          </Reveal>
           <div className="relative grid gap-3.5">
-            {whyUs.map((item) => (
-              <Card key={item.title} className="p-4.5 sm:p-6">
-                <h3 className="text-base font-semibold">{item.title}</h3>
-                <p className="mt-2.5 max-w-[40ch] text-sm leading-relaxed text-muted">
-                  {item.description}
-                </p>
-              </Card>
+            {whyUs.map((item, index) => (
+              <Reveal key={item.title} delay={index * 90}>
+                <Card className="p-4.5 sm:p-6">
+                  <h3 className="text-base font-semibold">{item.title}</h3>
+                  <p className="mt-2.5 max-w-[40ch] text-sm leading-relaxed text-muted">
+                    {item.description}
+                  </p>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -194,7 +201,7 @@ export default function HomePage() {
       {/* Rates */}
       <section id="rates">
         <Container className="pt-10 pb-8 sm:pt-16 sm:pb-10 md:pt-20">
-          <div className="mb-6 grid items-end gap-4 sm:mb-9 sm:grid-cols-2">
+          <Reveal className="mb-6 grid items-end gap-4 sm:mb-9 sm:grid-cols-2">
             <h2 className="max-w-[14ch] text-balance text-headline font-medium">
               Rates and transit times
             </h2>
@@ -202,9 +209,10 @@ export default function HomePage() {
               Working days from the day we dispatch. Pick-up means collection
               at the destination depot; door means we deliver to the address.
             </p>
-          </div>
+          </Reveal>
 
           <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+            <Reveal>
             <Card className="p-5 sm:p-7">
               <h3 className="text-lg font-semibold">DHL</h3>
               <p className="mt-1.5 mb-4.5 text-[13px] text-muted">{dhlRates.note}</p>
@@ -239,7 +247,9 @@ export default function HomePage() {
                 </tbody>
               </table>
             </Card>
+            </Reveal>
 
+            <Reveal delay={90}>
             <Card className="p-5 sm:p-7">
               <h3 className="text-lg font-semibold">FedEx</h3>
               <p className="mt-1.5 mb-4.5 text-[13px] text-muted">{fedexRates.note}</p>
@@ -254,7 +264,9 @@ export default function HomePage() {
                 ))}
               </ul>
             </Card>
+            </Reveal>
 
+            <Reveal delay={180}>
             <Card className="p-5 sm:p-7">
               <h3 className="text-lg font-semibold">UPS</h3>
               <p className="mt-1.5 mb-4.5 text-[13px] text-muted">{upsRates.note}</p>
@@ -289,6 +301,7 @@ export default function HomePage() {
                 </tbody>
               </table>
             </Card>
+            </Reveal>
           </div>
 
           <p className="mt-5 max-w-[70ch] text-sm leading-relaxed text-muted sm:mt-7">
@@ -302,14 +315,16 @@ export default function HomePage() {
       {/* Testimonials */}
       <section id="testimonials">
         <Container className="py-8 sm:py-12 md:py-16">
-          <Testimonials />
+          <Reveal>
+            <Testimonials />
+          </Reveal>
         </Container>
       </section>
 
       {/* FAQ */}
       <section id="faq">
         <Container className="py-8 sm:py-12 md:py-16">
-          <div className="mb-6 grid items-end gap-4 sm:mb-9 sm:grid-cols-2">
+          <Reveal className="mb-6 grid items-end gap-4 sm:mb-9 sm:grid-cols-2">
             <h2 className="max-w-[14ch] text-balance text-headline font-medium">
               Get all the details about our freight service
             </h2>
@@ -317,14 +332,16 @@ export default function HomePage() {
               Answers to what people ask most before they send their first
               shipment with us.
             </p>
-          </div>
-          <Accordion items={faqs.map((f) => ({ question: f.question, answer: f.answer }))} />
+          </Reveal>
+          <Reveal delay={100}>
+            <Accordion items={faqs.map((f) => ({ question: f.question, answer: f.answer }))} />
+          </Reveal>
         </Container>
       </section>
 
       {/* Quote */}
       <section id="quote" className="px-4 py-5 sm:px-6 sm:py-8 md:py-10">
-        <div className="grid gap-7 rounded-[var(--radius-card)] bg-ink p-6 sm:gap-14 sm:p-9 md:grid-cols-2 md:p-13">
+        <Reveal className="grid gap-7 rounded-[var(--radius-card)] bg-ink p-6 sm:gap-14 sm:p-9 md:grid-cols-2 md:p-13">
           <div>
             <h2 className="max-w-[16ch] text-balance text-[clamp(1.625rem,3.4vw,2.5rem)] leading-[1.08] font-medium tracking-[-0.03em] text-white">
               Tell us what you&rsquo;re sending and we&rsquo;ll price it
@@ -371,7 +388,7 @@ export default function HomePage() {
           </div>
 
           <QuoteForm />
-        </div>
+        </Reveal>
       </section>
     </main>
   );
