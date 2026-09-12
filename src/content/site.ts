@@ -25,24 +25,24 @@ export const contact = {
     {
       name: "Lagos",
       address: "No 6 Arewa Street, Mafoluku Oshodi, Lagos",
-      phone: "08032961109",
-      phoneHref: "tel:08032961109",
+      phone: "07060532519",
+      phoneHref: "tel:07060532519",
     },
     {
       name: "Abuja",
       address: "Shop HIG 140, Fati Abubakar, Wuye Ultra Modern Market, Abuja",
-      phone: "+234 810 034 7112",
-      phoneHref: "tel:+2348100347112",
+      phone: "09040831196",
+      phoneHref: "tel:09040831196",
     },
   ],
 
-  email: "support@aocfreighter.com",
+  email: "aoclogisticsng@gmail.com",
 
   /**
    * The number that receives quote requests and tracking chats from
    * the website. International format, digits only, no "+".
    */
-  whatsapp: "2348032961109",
+  whatsapp: "2347060532519",
 
   hours: "Mon–Sat, 8:00 AM – 6:00 PM WAT",
 } as const;
