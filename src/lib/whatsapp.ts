@@ -33,15 +33,16 @@ export function buildQuoteMessage(request: QuoteRequest): string {
 }
 
 /**
- * wa.me works on both mobile and WhatsApp Web, so one link covers
- * every device without sniffing the user agent.
+ * The official WhatsApp Business chat link works on both mobile and
+ * WhatsApp Web, so one link covers every device without sniffing the
+ * user agent.
  */
 export function buildWhatsAppUrl(request: QuoteRequest): string {
   const text = encodeURIComponent(buildQuoteMessage(request));
-  return `https://wa.me/${contact.whatsapp}?text=${text}`;
+  return `https://api.whatsapp.com/message/${contact.whatsapp}?text=${text}`;
 }
 
 /** A bare "chat with us" link, optionally with a prefilled message. */
 export function chatUrl(message = "Hello, I'd like a quote. I'm sending "): string {
-  return `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
+  return `https://api.whatsapp.com/message/${contact.whatsapp}?text=${encodeURIComponent(message)}`;
 }

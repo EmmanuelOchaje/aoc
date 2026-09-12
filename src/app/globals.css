@@ -97,6 +97,44 @@ body {
   transform: translateY(0);
 }
 
+/* Testimonial carousel — flips like a page turning in a book */
+.testimonial-stage {
+  overflow: hidden;
+  perspective: 1600px;
+}
+.testimonial-page {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  animation: page-flip-next 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.testimonial-page[data-direction="next"] {
+  transform-origin: left center;
+}
+.testimonial-page[data-direction="prev"] {
+  transform-origin: right center;
+  animation-name: page-flip-prev;
+}
+@keyframes page-flip-next {
+  from {
+    opacity: 0.4;
+    transform: rotateY(-100deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+}
+@keyframes page-flip-prev {
+  from {
+    opacity: 0.4;
+    transform: rotateY(100deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+}
+
 .route-chip {
   display: inline-flex;
   align-items: center;
