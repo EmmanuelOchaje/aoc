@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Route map — Lagos origin, animated great-circle lanes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<style>
+  /* palette: page #F2F1EE · card #FFFFFF · land #EFEDE8 · land-served #DCD8D0
+     routes/dots #111213 · origin #B4512A · labels #5B6066 · muted #8A8F95 · line #DDDAD4 */
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F2F1EE; color: #111213; font-family: "Instrument Sans", "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .coverage { padding: clamp(20px, 3vw, 44px); }
+  .coverage__head { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: clamp(16px, 3vw, 48px); align-items: end; margin-bottom: clamp(18px, 2.4vw, 28px); }
+  .coverage__head h2 { margin: 0; font-size: clamp(26px, 3.6vw, 42px); line-height: 1.06; font-weight: 500; letter-spacing: -0.03em; max-width: 14ch; text-wrap: balance; }
+  .coverage__head p { margin: 0; font-size: 14px; line-height: 1.6; color: #8A8F95; max-width: 44ch; justify-self: end; }
+  .coverage__card { background: #FFFFFF; border: 1px solid #E7E4DE; border-radius: 14px; overflow: hidden; }
+  .coverage__card svg { display: block; width: 100%; height: auto; }
+  .coverage__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: clamp(14px, 2vw, 20px); }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 9px 15px; border: 1px solid #DDDAD4; border-radius: 999px; background: #FFFFFF; font-size: 13px; font-weight: 500; color: #111213; cursor: default; transition: background .18s ease, color .18s ease, border-color .18s ease; }
+  .chip span { font-size: 12px; color: #8A8F95; }
+  .chip:hover { background: #111213; color: #FFFFFF; border-color: #111213; }
+  .chip:hover span { color: rgba(255,255,255,0.6); }
+  .coverage__note { margin: clamp(12px, 1.8vw, 18px) 0 0; font-size: 12px; color: #A6ABB1; }
+</style>
+</head>
+<body>
+<section class="coverage" id="coverage">
+  <div class="coverage__head">
+    <h2>Where your cargo goes</h2>
+    <p>Every lane runs out of Oshodi, Lagos. Hover a destination to trace the route. Figures are working days, door to door.</p>
+  </div>
+  <div class="coverage__card">
+    <svg id="route-map" role="img" aria-label="World map showing shipping routes from Lagos, Nigeria to London, Dublin, New York, Toronto, Berlin, Dubai, Guangzhou and Johannesburg"></svg>
+  </div>
+  <div class="coverage__chips" id="route-chips"></div>
+  <p class="coverage__note">Country outlines from Natural Earth. Routes shown are our most-used lanes, not a limit on where we ship.</p>
+</section>
+
+<script>
+// coords are [lon, lat]; iso = numeric country id (shades the served country)
+// dx/dy/anchor nudge the city label clear of its dot
+const LANES = [
+  { name: "London",       coords: [-0.1276, 51.5072], days: "5–7",   iso: "826", dx: 5,  dy: -8 },
+  { name: "Dublin",       coords: [-6.2603, 53.3498], days: "7–12",  iso: "372", dx: -7, dy: -14, anchor: "end" },
+  { name: "New York",     coords: [-74.006, 40.7128], days: "12–15", iso: "840", dx: -7, dy: 14,  anchor: "end" },
+  { name: "Toronto",      coords: [-79.3832, 43.6532], days: "9–12", iso: "124", dx: -7, dy: -8,  anchor: "end" },
+  { name: "Berlin",       coords: [13.405, 52.52],    days: "6–9",   iso: "276", dx: 7,  dy: 4 },
+  { name: "Dubai",        coords: [55.2708, 25.2048], days: "6–9",   iso: "784", dx: 7,  dy: 12 },
+  { name: "Guangzhou",    coords: [113.2644, 23.1291], days: "8–12", iso: "156", dx: 7,  dy: -6 },
+  { name: "Johannesburg", coords: [28.0473, -26.2041], days: "5–8",  iso: "710", dx: 7,  dy: 11 }
+];
+const ORIGIN = [3.3792, 6.5244]; // Lagos
+const W = 1600, H = 800;
+
+const svg = d3.select("#route-map").attr("viewBox", `0 0 ${W} ${H}`);
+const projection = d3.geoNaturalEarth1().scale(298).translate([W / 2 - 30, H / 2 + 26]);
+const path = d3.geoPath(projection);
+let lanes = [];
+
+d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json").then(topo => {
+  const countries = topojson.feature(topo, topo.objects.countries).features;
+  const served = new Set(LANES.map(d => d.iso).concat(["566"])); // 566 = Nigeria
+
+  svg.append("g").selectAll("path").data(countries).join("path")
+    .attr("d", path)
+    .attr("fill", d => served.has(d.id) ? "#DCD8D0" : "#EFEDE8")
+    .attr("stroke", "#FFFFFF").attr("stroke-width", 0.6);
+
+  svg.append("path").datum(d3.geoGraticule10()).attr("d", path)
+    .attr("fill", "none").attr("stroke", "#111213")
+    .attr("stroke-opacity", 0.045).attr("stroke-width", 0.5);
+
+  const arcs = svg.append("g"), pts = svg.append("g"), labels = svg.append("g");
+  const [ox, oy] = projection(ORIGIN);
+
+  lanes = LANES.map(d => {
+    // great-circle path sampled at 50 points, then projected
+    const feature = { type: "LineString", coordinates: d3.range(0, 1.001, 0.02).map(t => d3.geoInterpolate(ORIGIN, d.coords)(t)) };
+    const arc = arcs.append("path").attr("d", path(feature)).attr("fill", "none")
+      .attr("stroke", "#111213").attr("stroke-width", 1.2).attr("stroke-opacity", 0.55);
+    const node = arc.node(), len = node.getTotalLength();
+    arc.attr("stroke-dasharray", "0 " + len);
+
+    const [x, y] = projection(d.coords);
+    const spark = pts.append("circle").attr("r", 3).attr("fill", "#111213");
+    pts.append("circle").attr("cx", x).attr("cy", y).attr("r", 3.4).attr("fill", "#111213");
+    const ring = pts.append("circle").attr("cx", x).attr("cy", y).attr("r", 4)
+      .attr("fill", "none").attr("stroke", "#111213").attr("stroke-width", 1);
+
+    labels.append("text").attr("x", x + d.dx).attr("y", y + d.dy)
+      .attr("text-anchor", d.anchor || "start")
+      .attr("font-size", 10).attr("font-weight", 600).attr("letter-spacing", "0.08em")
+      .attr("fill", "#5B6066").attr("font-family", "Instrument Sans, sans-serif")
+      .text(d.name.toUpperCase());
+
+    return { name: d.name, node, len, spark, ring, arc, held: false };
+  });
+
+  pts.append("circle").attr("cx", ox).attr("cy", oy).attr("r", 5.5).attr("fill", "#B4512A");
+  labels.append("text").attr("x", ox).attr("y", oy + 22).attr("text-anchor", "middle")
+    .attr("font-size", 12).attr("font-weight", 700).attr("letter-spacing", "0.08em")
+    .attr("fill", "#111213").attr("font-family", "Instrument Sans, sans-serif").text("LAGOS");
+
+  buildChips();
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    lanes.forEach(l => l.arc.attr("stroke-dasharray", l.len + " 0"));
+    return;
+  }
+
+  const t0 = performance.now();
+  d3.timer(now => {
+    const el = (now - t0) / 1000;
+    lanes.forEach((l, i) => {
+      const t = ((el * 0.13) + i / lanes.length) % 1;       // staggered per lane
+      const pt = l.node.getPointAtLength(t * l.len);
+      l.spark.attr("cx", pt.x).attr("cy", pt.y).attr("opacity", Math.sin(t * Math.PI) * 1.2);
+      if (!l.held) {                                         // trailing 45% dash, drawn from Lagos
+        const head = t * l.len, start = Math.max(0, head - l.len * 0.45);
+        l.arc.attr("stroke-dasharray", (head - start) + " " + l.len).attr("stroke-dashoffset", -start);
+      }
+      const pulse = (el * 0.6 + i * 0.17) % 1;               // destination ring, 4 → 17px
+      l.ring.attr("r", 4 + pulse * 13).attr("stroke-opacity", 0.45 * (1 - pulse));
+    });
+  });
+});
+
+function hoverLane(name, on) {
+  lanes.forEach(l => {
+    l.held = on && l.name === name;
+    if (l.held) l.arc.attr("stroke-dasharray", l.len + " 0").attr("stroke-dashoffset", 0);
+    l.arc.attr("stroke-opacity", on ? (l.name === name ? 1 : 0.12) : 0.55)
+         .attr("stroke-width", on && l.name === name ? 2 : 1.2);
+  });
+}
+
+function buildChips() {
+  const host = document.getElementById("route-chips");
+  LANES.forEach(d => {
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.innerHTML = d.name + ' <span>' + d.days + ' days</span>';
+    chip.addEventListener("mouseenter", () => hoverLane(d.name, true));
+    chip.addEventListener("mouseleave", () => hoverLane(d.name, false));
+    host.appendChild(chip);
+  });
+}
+</script>
+</body>
+</html>
