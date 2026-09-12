@@ -63,7 +63,7 @@ export default function HomePage() {
 
       {/* Reliable handling from drop-off to doorstep */}
       <Container className="pb-10 sm:pb-14 md:pb-20">
-        <div className="grid items-center gap-6 sm:gap-10 md:grid-cols-2">
+        <div className="grid items-center gap-6 sm:gap-14 md:grid-cols-2">
           <div>
             <h2 className="max-w-[15ch] text-balance text-headline font-medium">
               Reliable handling from drop-off to doorstep
@@ -77,14 +77,34 @@ export default function HomePage() {
               Get a quote
             </Button>
           </div>
-          <div className="relative h-[260px] overflow-hidden rounded-[var(--radius-tile)] sm:h-[340px] md:h-[420px]">
-            <Image
-              src="/images/streamline-loading.jpg"
-              alt="Cartons being loaded"
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
-            />
+          <div className="grid grid-cols-2 gap-2 sm:gap-3.5">
+            <div className="relative col-span-2 h-[180px] overflow-hidden rounded-[var(--radius-tile)] sm:h-[220px] md:h-[270px]">
+              <Image
+                src="/images/streamline-loading.jpg"
+                alt="Cartons being loaded"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative h-[150px] overflow-hidden rounded-[var(--radius-tile)] sm:h-[180px] md:h-[220px]">
+              <Image
+                src="/images/hero-forklift.jpg"
+                alt="Forklift moving pallets in a warehouse"
+                fill
+                sizes="(min-width: 768px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative h-[150px] overflow-hidden rounded-[var(--radius-tile)] sm:h-[180px] md:h-[220px]">
+              <Image
+                src="/images/hero-truck.jpg"
+                alt="Freight truck on the road"
+                fill
+                sizes="(min-width: 768px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </Container>

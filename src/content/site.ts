@@ -47,6 +47,21 @@ export const contact = {
   hours: "Mon–Sat, 8:00 AM – 6:00 PM WAT",
 } as const;
 
+export const socials = [
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/aoc.logistics?stkn=MTEwcTIwbXI1ajkzNg%3D%3D&utm_source=qr",
+  },
+  {
+    name: "TikTok",
+    href: "https://www.tiktok.com/@aoc.logistics?_r=1&_t=ZS-99eQIVooRd6",
+  },
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com/share/1DALVaRdsB/?mibextid=wwXIfr",
+  },
+] as const;
+
 export const nav = [
   { label: "Services", href: "#services" },
   { label: "How it works", href: "#process" },

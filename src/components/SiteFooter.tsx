@@ -1,6 +1,7 @@
-import { company, contact, nav } from "@/content/site";
+import { company, contact, nav, socials } from "@/content/site";
 import { Container } from "@/components/ui";
 import { Wordmark } from "@/components/Wordmark";
+import { SocialIcon } from "@/components/SocialIcon";
 import { chatUrl } from "@/lib/whatsapp";
 
 export function SiteFooter() {
@@ -15,6 +16,20 @@ export function SiteFooter() {
             <p className="mt-3 max-w-[26ch] text-sm leading-relaxed text-muted">
               Lagos and Abuja. DHL, FedEx and UPS dispatch.
             </p>
+            <div className="mt-4 flex gap-3">
+              {socials.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
+                  className="text-muted hover:text-ink"
+                >
+                  <SocialIcon name={social.name} />
+                </a>
+              ))}
+            </div>
           </div>
 
           <FooterColumn title="Lagos office">
