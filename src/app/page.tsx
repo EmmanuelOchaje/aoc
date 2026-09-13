@@ -83,8 +83,8 @@ export default function HomePage() {
           <div className="grid grid-cols-2 gap-2 sm:gap-3.5">
             <div className="relative col-span-2 h-[180px] overflow-hidden rounded-[var(--radius-tile)] sm:h-[220px] md:h-[270px]">
               <Image
-                src="/images/streamline-loading.jpg"
-                alt="Cartons being loaded"
+                src="/images/handling-carton.jpg"
+                alt="Shipment carton weighed and packed for dispatch"
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"
                 className="object-cover"
@@ -92,8 +92,8 @@ export default function HomePage() {
             </div>
             <div className="relative h-[150px] overflow-hidden rounded-[var(--radius-tile)] sm:h-[180px] md:h-[220px]">
               <Image
-                src="/images/hero-forklift.jpg"
-                alt="Forklift moving pallets in a warehouse"
+                src="/images/handling-packing-1.jpg"
+                alt="Item wrapped for shipping"
                 fill
                 sizes="(min-width: 768px) 25vw, 50vw"
                 className="object-cover"
@@ -101,8 +101,8 @@ export default function HomePage() {
             </div>
             <div className="relative h-[150px] overflow-hidden rounded-[var(--radius-tile)] sm:h-[180px] md:h-[220px]">
               <Image
-                src="/images/hero-truck.jpg"
-                alt="Freight truck on the road"
+                src="/images/handling-packing-2.jpg"
+                alt="Items being packed into a shipping box"
                 fill
                 sizes="(min-width: 768px) 25vw, 50vw"
                 className="object-cover"
